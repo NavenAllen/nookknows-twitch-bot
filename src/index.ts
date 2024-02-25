@@ -1,6 +1,8 @@
 import * as tmi from 'tmi.js';
 import 'dotenv/config'
 
+import {fetchVillager} from './api'
+
 // Define configuration options
 const opts = {
   options: { debug: true }, 
@@ -49,4 +51,5 @@ function rollDice() {
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler(addr: string, port: Number) {
   console.log(`* Connected to ${addr}:${port}`);
+  console.log(fetchVillager("ribbot"))
 }
