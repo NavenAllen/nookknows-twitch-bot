@@ -1,12 +1,14 @@
 import * as tmi from 'tmi.js';
+import 'dotenv/config'
 
 // Define configuration options
 const opts = {
+  options: { debug: true }, 
   identity: {
-    username: '<BOT_USERNAME>',
-    password: '<OAUTH_TOKEN>',
+    username: 'nookknows',
+    password: process.env.OAUTH_TOKEN,
   },
-  channels: ['<CHANNEL_NAME>'],
+  channels: ['nookknows'],
 };
 
 // Create a client with our options
