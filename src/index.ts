@@ -38,10 +38,12 @@ function onMessageHandler(
   const command = msg.split(' ');
 
   // If the command is known, let's execute it
-  if (command[0] === '!dice') {
-    const num = rollDice();
-    client.say(channel, `You rolled a ${num}`);
-    console.log(`* Executed ${command[0]} command`);
+  if (command[0] === '!join') {
+    client.join(context.username!)
+    console.log(`* JOINED ${context.username!}`);
+  } else if (command[0] === '!leave') {
+    client.part(context.username!)
+    console.log(`* LEFT ${context.username!} :(`);
   } else if (command[0] === '!villager') {
     if (command.length !== 2) {
       client.say(channel, 'Usage: !villager <villager_name>');
