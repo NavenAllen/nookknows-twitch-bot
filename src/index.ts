@@ -1,11 +1,11 @@
 import * as tmi from 'tmi.js';
-import 'dotenv/config'
+import 'dotenv/config';
 
-import {fetchVillager} from './api'
+import {fetchVillager} from './api';
 
 // Define configuration options
 const opts = {
-  options: { debug: true }, 
+  options: {debug: true},
   identity: {
     username: 'nookknows',
     password: process.env.OAUTH_TOKEN,
@@ -24,7 +24,12 @@ client.on('connected', onConnectedHandler);
 client.connect();
 
 // Called every time a message comes in
-function onMessageHandler(target: string,  context: tmi.ChatUserstate, msg: string, self: Boolean) {
+function onMessageHandler(
+  target: string,
+  context: tmi.ChatUserstate,
+  msg: string,
+  self: Boolean
+) {
   if (self) {
     return;
   } // Ignore messages from the bot
@@ -51,5 +56,5 @@ function rollDice() {
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler(addr: string, port: Number) {
   console.log(`* Connected to ${addr}:${port}`);
-  console.log(fetchVillager("ribbot"))
+  console.log(fetchVillager('ribbot'));
 }
