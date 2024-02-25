@@ -66,6 +66,7 @@ export const fetchVillager = async (name: string): Promise<string> => {
     .catch((error: any) => {
       message =
         'Oops! Nook ran into trouble trying to fetch data. Maybe contact the admin?';
+      console.log(error);
     });
 
   return message;
