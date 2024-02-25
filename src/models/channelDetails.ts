@@ -3,11 +3,13 @@ import {
   DescribeTableCommand,
   CreateTableCommand,
   PutItemCommand,
+  UpdateItemCommand,
   ScanCommand,
   ScalarAttributeType,
   KeyType,
   ReturnConsumedCapacity,
   ScanCommandOutput,
+  ReturnValue,
 } from '@aws-sdk/client-dynamodb';
 import {ChannelDetail} from './types';
 
@@ -94,21 +96,24 @@ export const addChannel = async (channelName: string) => {
 
 export const removeChannel = async (channelName: string) => {
   const input = {
-    Item: {
-      ChannelName: {
-        S: channelName,
-      },
-      Active: {
-        BOOL: false,
-      },
-      GPTAccess: {
+    ExpressionAttributeNames: {
+      '#A': 'Active',
+    },
+    ExpressionAttributeValues: {
+      ':a': {
         BOOL: false,
       },
     },
-    ReturnConsumedCapacity: ReturnConsumedCapacity.TOTAL,
+    Key: {
+      ChannelName: {
+        S: channelName,
+      },
+    },
+    ReturnValues: ReturnValue.ALL_NEW,
     TableName: process.env.CHANNELS_TABLE_NAME,
+    UpdateExpression: 'SET #A = :a',
   };
-  const command = new PutItemCommand(input);
+  const command = new UpdateItemCommand(input);
   return await client.send(command);
 };
 
@@ -117,18 +122,24 @@ export const updateGPTAccess = async (
   gptAccess: boolean
 ) => {
   const input = {
-    Item: {
-      ChannelName: {
-        S: channelName,
-      },
-      GPTAccess: {
+    ExpressionAttributeNames: {
+      '#G': 'GPTAccess',
+    },
+    ExpressionAttributeValues: {
+      ':g': {
         BOOL: gptAccess,
       },
     },
-    ReturnConsumedCapacity: ReturnConsumedCapacity.TOTAL,
+    Key: {
+      ChannelName: {
+        S: channelName,
+      },
+    },
+    ReturnValues: ReturnValue.ALL_NEW,
     TableName: process.env.CHANNELS_TABLE_NAME,
+    UpdateExpression: 'SET #G = :g',
   };
-  const command = new PutItemCommand(input);
+  const command = new UpdateItemCommand(input);
   return await client.send(command);
 };
 
