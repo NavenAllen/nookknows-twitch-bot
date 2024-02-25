@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "@types/node": "20.8.2",
+    "@types/tmi.js": "^1.8.6",
+    "gts": "^5.2.0",
+    "typescript": "~5.2.0"
+  },
+  "scripts": {
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "check-types": "tsc --noEmit",
+    "compile": "tsc",
+    "fix": "gts fix"
+  }
+}
