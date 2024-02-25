@@ -112,6 +112,26 @@ export const removeChannel = async (channelName: string) => {
   return await client.send(command);
 };
 
+export const updateGPTAccess = async (
+  channelName: string,
+  gptAccess: boolean
+) => {
+  const input = {
+    Item: {
+      ChannelName: {
+        S: channelName,
+      },
+      GPTAccess: {
+        BOOL: gptAccess,
+      },
+    },
+    ReturnConsumedCapacity: ReturnConsumedCapacity.TOTAL,
+    TableName: process.env.CHANNELS_TABLE_NAME,
+  };
+  const command = new PutItemCommand(input);
+  return await client.send(command);
+};
+
 export const initDatabase = async () => {
   const input = {
     // DescribeTableInput

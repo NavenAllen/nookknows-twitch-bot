@@ -7,6 +7,7 @@ import {
   addChannel,
   removeChannel,
   getJoinedChannels,
+  updateGPTAccess,
 } from './models/channelDetails';
 import {ChannelDetail} from './models/types';
 
@@ -66,6 +67,20 @@ function onMessageHandler(
             removeChannel(context.username!);
             console.log(`* LEFT ${command[2]} :(`);
           }
+        } else if (command[1] === 'gpt') {
+          if (command.length !== 4) {
+            client.say(channel, 'Usage: !modaction gpt <channel_name> ON/OFF');
+          } else {
+            const channelName = command[2].toLowerCase();
+            const gptAccess = command[3] === 'ON';
+            updateGPTAccess(channelName, gptAccess);
+            channelDetails = channelDetails.map(detail =>
+              detail.name === channelName
+                ? {...detail, gptAccess: gptAccess}
+                : detail
+            );
+            console.log(`* Changed GPT Access for  ${command[2]}`);
+          }
         }
       } else {
         client.say(channel, 'You do not have the permission to do that!!');
@@ -86,7 +101,15 @@ function onMessageHandler(
     if (command.length !== 2) {
       client.say(channel, 'Usage: !villager <villager_name>');
     } else {
-      fetchVillager(command[1]).then((message: string) => {
+      console.log(channelDetails);
+      const channelDetail = channelDetails.find(detail =>
+        channel.includes(detail.name)
+      );
+      console.log(channelDetail);
+      fetchVillager(
+        command[1],
+        channelDetail ? channelDetail.gptAccess : false
+      ).then((message: string) => {
         client.say(channel, message);
       });
     }

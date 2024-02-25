@@ -17,7 +17,10 @@ interface Villager {
   phrase: string;
 }
 
-export const fetchVillager = async (name: string): Promise<string> => {
+export const fetchVillager = async (
+  name: string,
+  gptResponse: Boolean
+): Promise<string> => {
   const villagerProperties = apiProperties['villagers'];
   let message: string | null = '';
 
@@ -45,19 +48,24 @@ export const fetchVillager = async (name: string): Promise<string> => {
           quote: data[0].quote,
           phrase: data[0].phrase,
         };
-        const chatbotMessages = villagerProperties['gpt_message'];
-        chatbotMessages.push({
-          role: 'user',
-          content:
-            'Give me a message that includes the following data about a villager. Capitalize the personality: ' +
-            JSON.stringify(response),
-        });
 
-        const completion = await openai.chat.completions.create({
-          messages: chatbotMessages,
-          model: 'gpt-3.5-turbo',
-        });
-        message = completion.choices[0].message.content;
+        if (gptResponse) {
+          const chatbotMessages = villagerProperties['gpt_message'];
+          chatbotMessages.push({
+            role: 'user',
+            content:
+              'Give me a message that includes the following data about a villager. Capitalize the personality: ' +
+              JSON.stringify(response),
+          });
+
+          const completion = await openai.chat.completions.create({
+            messages: chatbotMessages,
+            model: 'gpt-3.5-turbo',
+          });
+          message = completion.choices[0].message.content;
+        } else {
+          message = `${response.name} is a ${response.personality} ${response.species}, ${response.phrase}! More info: ${response.url}`;
+        }
       } else {
         message =
           'A villager with that name was not found! Maybe try again? :(';
