@@ -25,7 +25,7 @@ client.connect();
 
 // Called every time a message comes in
 function onMessageHandler(
-  target: string,
+  channel: string,
   context: tmi.ChatUserstate,
   msg: string,
   self: Boolean
@@ -35,15 +35,23 @@ function onMessageHandler(
   } // Ignore messages from the bot
 
   // Remove whitespace from chat message
-  const commandName = msg.trim();
+  const command = msg.split(' ');
 
   // If the command is known, let's execute it
-  if (commandName === '!dice') {
+  if (command[0] === '!dice') {
     const num = rollDice();
-    client.say(target, `You rolled a ${num}`);
-    console.log(`* Executed ${commandName} command`);
+    client.say(channel, `You rolled a ${num}`);
+    console.log(`* Executed ${command[0]} command`);
+  } else if (command[0] === '!villager') {
+    if (command.length !== 2) {
+      client.say(channel, 'Usage: !villager <villager_name>');
+    } else {
+      fetchVillager(command[1]).then((message: string) => {
+        client.say(channel, message);
+      });
+    }
   } else {
-    console.log(`* Unknown command ${commandName}`);
+    console.log(`* Unknown command ${command[0]}`);
   }
 }
 
@@ -56,5 +64,5 @@ function rollDice() {
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler(addr: string, port: Number) {
   console.log(`* Connected to ${addr}:${port}`);
-  console.log(fetchVillager('ribbot'));
+  fetchVillager('ribbot').then((data: string) => console.log(data));
 }
